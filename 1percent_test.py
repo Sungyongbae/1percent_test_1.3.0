@@ -74,7 +74,6 @@ def get_top5(rq):
         result2 = final.iloc[:5]['volatility'].values.tolist()
     return result[0]
 
-ticker = "KRW-XRP"
 def get_cci(ticker):
     period = 14
     df = pyupbit.get_ohlcv(ticker, interval = 'minute1', count = 200)
@@ -114,12 +113,12 @@ while True:
                 ticker_check = True
             cci = get_cci(get_ticker)
             rsi = get_rsi(get_ticker)
-            if cci < (-100) and rsi < 30 and check_buy == False:
+            if cci < (-100) and rsi < 30 and check_buy == False and check_trade == False:
                 print('매수 하러 옴')
                 current_price = get_current_price(get_ticker)
                 buy_time = datetime.datetime.now()
                 buy_date = now.strftime('%b/%d')
-                buy_ticker = ticker
+                buy_ticker = get_ticker
                 buy_price =  current_price 
                 buy_total =(my_money*0.9995*0.996)/buy_price
                 bot.sendMessage(ID2, str(buy_ticker) + '\n'
@@ -130,6 +129,7 @@ while True:
                 my_money = 0
                 check_buy = True
             if check_buy == True and check_trade == False:
+                print("수익 확인중")
                 current_profit = check_profit(buy_ticker,buy_price,buy_total)
                 if current_profit >= 1.5:
                     print('수익실현 하러 옴')
@@ -174,6 +174,7 @@ while True:
             check_trade = False
             check_buy = False
             check_success = False
+            ticker_check = False
             print('변수 초기화 완료')
         time.sleep(1)
     except Exception as e:
